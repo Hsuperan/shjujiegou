@@ -6,8 +6,8 @@
           构成一个堆，这样就会的到n个元素中 的最大值如此反复执行，得到一个有序序列。
    大顶堆：根节点是最大者
    小顶堆：根节点是最小者
-大顶堆满足条件：Ki>=K2i 且 Ki>=K2i+1  (1<=i<=[n/2])  ki为左孩子 k2i+1为右孩子
-小顶堆满足条件：Ki<=K2i 且 Ki<=K2i+1  (1<=i<=[n/2])
+大顶堆满足条件：K[i]>=K[2*i+1] 且K[i]>=K[2*i+2]   (0<=i<=n/2-1)  K[i]为堆顶 K[2*i+1]为堆顶左子树  K[2*i+2]为堆顶的右子树
+小顶堆满足条件：K[i]<=K[2*i+1] 且K[i]<=K[2*i+2]   (0<=i<=n/2-1)  
 实现步骤:
            先将初始文件R[1..n]建成一个大顶堆，此堆为初始的无序区   
            再将关键字最大的记录R[1](即堆顶)和无序区的最后一个记录R[n]交换，   
@@ -29,36 +29,36 @@
 
 /******************************************************************************************
   功能：实现大顶堆的构建
-  输入参数： int s：起始操作的元素的下标 
-             2*s+1:表示s的左子树下标
-             2*s+2:表示s的右子树小标
+  输入参数： int i：起始操作的元素的下标 
+             2*i+1:表示i的左子树下标
+             2*i+2:表示i的右子树小标
              
              int len:需要构建大顶堆的数组的长度
 返回值：无
 *******************************************************************************************/
-void HeapAdjust(int a[],int s,int len)
+void HeapAdjust(int a[],int i,int len)
 {
-   while( 2*s+1 < len )
+   while( 2*i+1 < len )
    {
-      int maxindex=2*s+1; //将最大的下标初始化为s的子树下标
-      if(2*s+2<len)
+      int maxindex=2*i+1; //将最大的下标初始化为s的子树下标
+      if(2*i+2<len)
       {
          //比较左子树和右子树，记录最大值的Index  
-         if(a[2*s+1]<a[2*s+2])
+         if(a[2*i+1]<a[2*i+2])
          {
-            maxindex=2*s+2;
+            maxindex=2*i+2;
          }
       }
       
-      if(a[s]<a[maxindex])
+      if(a[i]<a[maxindex])
       {
-       //交换s与maxindex的数据
-        a[s]=a[s]^a[maxindex];
-        a[maxindex]=a[s]^a[maxindex];
-        a[s]=a[s]^a[maxindex];
+       //交换i与maxindex的数据
+        a[i]=a[i]^a[maxindex];
+        a[maxindex]=a[i]^a[maxindex];
+        a[i]=a[i]^a[maxindex];
        
         //堆被破坏，需重新调整
-        s=maxindex;
+        i=maxindex;
       }
       else
       {
@@ -72,15 +72,16 @@ void HeapAdjust(int a[],int s,int len)
 //堆排序
 void HeapSort(int a[],int len)
 {
-   int i;
+   int i=0;
    //将a[0,Len-1]建成大顶堆   
-   for(i=len/2-1;i>0;i--)
+   for(i=len/2-1;i>=0;i--)
    {
        //调用构建大顶堆函数
-        HeapAdjust(a,0,i);
+        HeapAdjust(a,i,len);
    }
    
-   for(i=len-1;i>=0;i--)
+   //只需做n-1趟排序
+   for(i=len-1;i>0;i--)
    {
      //将字最大的记录R[1](即堆顶)和无序区的最后一个记录R[n]交换
      a[0]=a[0]^a[i];
